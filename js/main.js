@@ -233,3 +233,10 @@ document.getElementById('details-close').addEventListener('click', () => details
 // ---------- Init ----------
 loadCategories();
 loadPets(`${API}/pets`, 'pets');
+
+// ---------- Subscribe ----------
+document.getElementById('subscribe-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  e.target.reset();
+  document.getElementById('subscribe-msg').classList.remove('hidden');
+});
