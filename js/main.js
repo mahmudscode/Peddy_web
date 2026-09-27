@@ -36,6 +36,7 @@ const petsEl = document.getElementById('pets');
 const spinnerEl = document.getElementById('spinner');
 const likedEl = document.getElementById('liked');
 const likedEmptyEl = document.getElementById('liked-empty');
+const likedPanel = document.getElementById('liked-panel');
 const detailsModal = document.getElementById('details-modal');
 const detailsContent = document.getElementById('details-content');
 const adoptModal = document.getElementById('adopt-modal');
@@ -197,6 +198,8 @@ document.getElementById('sort-btn').addEventListener('click', () => {
 const likePet = (id, image, name) => {
   if (likedEl.querySelector(`[data-id="${id}"]`)) return;
   likedEmptyEl.classList.add('hidden');
+  // Once something is liked, keep the panel in view while scrolling (desktop)
+  likedPanel.classList.add('lg:sticky', 'lg:top-28');
   likedEl.insertAdjacentHTML(
     'beforeend',
     `<button data-id="${id}" title="View ${name}" aria-label="View details of ${name}"
