@@ -1,13 +1,8 @@
 # Peddy - Pet Adoption Platform
 
-**Welcome to Assignment 6 !!!**
+
 In this assignment You have to create a pet adoption platform where users can browse and adopt pets. We will provides you APIs to fetch pet-related data such as all pets, categories of pets, and specific pet details , pet data based on category
 
-## Private For your Assignment
-
-you have to create private repo in our Google Classroom . here is the Link
-
-# [https://classroom.github.com/a/gUlZfxsK](https://classroom.github.com/a/gUlZfxsK)
 
 ## APIs
 
