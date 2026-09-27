@@ -14,6 +14,11 @@ menuBtn.addEventListener('click', () => {
   menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
 });
 
+// Close the mobile menu after picking a link
+mobileMenu.addEventListener('click', (e) => {
+  if (e.target.closest('a') && !mobileMenu.classList.contains('hidden')) menuBtn.click();
+});
+
 // ---------- API ----------
 const API = 'https://openapi.programming-hero.com/api/peddy';
 
