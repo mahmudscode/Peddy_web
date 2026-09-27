@@ -91,9 +91,64 @@
         class="mt-10 w-full max-w-3xl" />
     </section>
 
-    <!-- Adopt Your Best Friend (built next) -->
-    <section id="adopt" class="scroll-mt-6 py-16"></section>
+    <!-- Adopt Your Best Friend -->
+    <section id="adopt" class="scroll-mt-6 py-16 lg:py-24">
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-black">Adopt Your Best Friend</h2>
+        <p class="mt-4 max-w-2xl mx-auto text-sm md:text-base text-dark/70">
+          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a.
+        </p>
+      </div>
+
+      <!-- Categories (rendered from API) -->
+      <div id="categories" class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6"></div>
+
+      <!-- Subtitle + sort -->
+      <div class="mt-10 lg:mt-14 flex items-center justify-between gap-4">
+        <h3 class="text-xl md:text-2xl font-black">Best Deal For you</h3>
+        <button id="sort-btn"
+          class="px-5 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition-colors">
+          Sort by Price
+        </button>
+      </div>
+
+      <div class="mt-6 flex flex-col lg:flex-row gap-6">
+        <!-- Pets grid -->
+        <div class="lg:w-3/4">
+          <div id="spinner" class="hidden py-24 flex justify-center">
+            <span class="w-14 h-14 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></span>
+          </div>
+          <div id="pets" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- Liked pets -->
+        <aside class="lg:w-1/4">
+          <div id="liked" class="grid grid-cols-2 gap-4 p-4 border border-dark/10 rounded-xl content-start min-h-40">
+            <p id="liked-empty" class="col-span-2 self-center text-center text-sm text-dark/50">Pets you like will show up here.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
   </main>
+
+  <!-- Details modal -->
+  <dialog id="details-modal" class="w-11/12 max-w-2xl rounded-2xl p-0 backdrop:bg-black/50">
+    <div id="details-content" class="p-6"></div>
+    <div class="px-6 pb-6">
+      <button id="details-close"
+        class="w-full py-3 rounded-lg bg-primary/10 text-primary font-bold border border-primary/20 hover:bg-primary/20">
+        Cancel
+      </button>
+    </div>
+  </dialog>
+
+  <!-- Adopt countdown modal -->
+  <dialog id="adopt-modal" class="w-11/12 max-w-md rounded-2xl p-8 text-center backdrop:bg-black/50">
+    <img src="images/logo.webp" alt="" class="w-12 h-12 mx-auto" />
+    <h3 class="mt-4 text-3xl font-black">Congrats!</h3>
+    <p class="mt-2 text-dark/70">Adoption process is starting for your pet</p>
+    <p id="countdown" class="mt-4 text-6xl font-black text-primary">3</p>
+  </dialog>
 
   <script src="js/main.js"></script>
 </body>
