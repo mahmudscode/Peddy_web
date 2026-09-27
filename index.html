@@ -203,9 +203,13 @@
   <!-- Details modal -->
   <dialog id="details-modal" class="w-11/12 max-w-2xl rounded-2xl p-0 backdrop:bg-black/50">
     <div id="details-content" class="p-6"></div>
-    <div class="px-6 pb-6">
+    <div class="px-6 pb-6 grid grid-cols-2 gap-3">
+      <button id="details-adopt" data-action="adopt"
+        class="py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-primary">
+        Adopt
+      </button>
       <button id="details-close"
-        class="w-full py-3 rounded-lg bg-primary/10 text-primary font-bold border border-primary/20 hover:bg-primary/20">
+        class="py-3 rounded-lg bg-primary/10 text-primary font-bold border border-primary/20 hover:bg-primary/20">
         Cancel
       </button>
     </div>

@@ -20,6 +20,10 @@ const API = 'https://openapi.programming-hero.com/api/peddy';
 // ---------- State ----------
 let currentPets = [];
 let activeCategory = null;
+let isLoading = false;
+let loadRequestId = 0;
+const adoptedIds = new Set();
+let adoptingId = null;
 
 // ---------- DOM ----------
 const categoriesEl = document.getElementById('categories');
@@ -31,8 +35,11 @@ const detailsModal = document.getElementById('details-modal');
 const detailsContent = document.getElementById('details-content');
 const adoptModal = document.getElementById('adopt-modal');
 const countdownEl = document.getElementById('countdown');
+const detailsAdoptBtn = document.getElementById('details-adopt');
 
 // ---------- Helpers ----------
+const PLACEHOLDER_IMG = 'images/pet.webp';
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fallback = (value, text = 'Not available') =>
@@ -102,19 +109,27 @@ categoriesEl.addEventListener('click', (e) => {
 
 // ---------- Pets ----------
 const loadPets = async (url, key) => {
+  // Only the latest request may update the grid (guards against fast category clicks)
+  const requestId = ++loadRequestId;
+  isLoading = true;
   petsEl.innerHTML = '';
   spinnerEl.classList.remove('hidden');
   try {
     // Show the spinner for at least 2 seconds
     const [res] = await Promise.all([fetch(url), delay(2000)]);
     const data = await res.json();
+    if (requestId !== loadRequestId) return;
     currentPets = data[key] ?? [];
     displayPets(currentPets);
   } catch (err) {
+    if (requestId !== loadRequestId) return;
     currentPets = [];
     petsEl.innerHTML = '<p class="col-span-full text-center text-dark/60 py-16">Something went wrong. Please try again.</p>';
   } finally {
-    spinnerEl.classList.add('hidden');
+    if (requestId === loadRequestId) {
+      isLoading = false;
+      spinnerEl.classList.add('hidden');
+    }
   }
 };
 
@@ -135,7 +150,8 @@ const displayPets = (pets) => {
     .map(
       ({ petId, image, pet_name, breed, date_of_birth, gender, price }) => `
       <div class="p-5 border border-dark/10 rounded-xl flex flex-col">
-        <img src="${image}" alt="${fallback(pet_name, 'Pet')}" class="w-full h-40 object-cover rounded-lg" />
+        <img src="${fallback(image, PLACEHOLDER_IMG)}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"
+          alt="${fallback(pet_name, 'Pet')}" class="w-full h-40 object-cover rounded-lg bg-dark/5" />
         <h4 class="mt-5 text-xl font-bold">${fallback(pet_name, 'Unnamed')}</h4>
         <ul class="mt-2 space-y-1 text-sm text-dark/70">
           ${infoRow(ICONS.breed, 'Breed', fallback(breed))}
@@ -144,10 +160,10 @@ const displayPets = (pets) => {
           ${infoRow(ICONS.price, 'Price', formatPrice(price))}
         </ul>
         <div class="mt-4 pt-4 border-t border-dark/10 flex items-center justify-between gap-2">
-          <button data-action="like" data-id="${petId}" data-image="${image}" aria-label="Like"
+          <button data-action="like" data-id="${petId}" data-image="${fallback(image, PLACEHOLDER_IMG)}" data-name="${fallback(pet_name, 'Pet')}" aria-label="Like"
             class="px-4 py-2 rounded-lg border border-primary/20 text-dark/70 hover:bg-primary/10">${ICONS.like}</button>
-          <button data-action="adopt"
-            class="px-4 py-2 rounded-lg border border-primary/20 text-primary font-bold hover:bg-primary/10 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-transparent">Adopt</button>
+          <button data-action="adopt" data-id="${petId}" ${adoptedIds.has(String(petId)) ? 'disabled' : ''}
+            class="px-4 py-2 rounded-lg border border-primary/20 text-primary font-bold hover:bg-primary/10 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-transparent">${adoptedIds.has(String(petId)) ? 'Adopted' : 'Adopt'}</button>
           <button data-action="details" data-id="${petId}"
             class="px-4 py-2 rounded-lg border border-primary/20 text-primary font-bold hover:bg-primary/10">Details</button>
         </div>
@@ -159,30 +175,52 @@ const displayPets = (pets) => {
 petsEl.addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-action]');
   if (!btn) return;
-  const { action, id, image } = btn.dataset;
-  if (action === 'like') likePet(id, image);
-  if (action === 'adopt') adoptPet(btn);
-  if (action === 'details') showDetails(id);
+  const { action, id, image, name } = btn.dataset;
+  if (action === 'like') likePet(id, image, name);
+  if (action === 'adopt') adoptPet(id);
+  if (action === 'details') showDetails(id, btn);
 });
 
 // ---------- Sort ----------
 document.getElementById('sort-btn').addEventListener('click', () => {
+  if (isLoading) return;
   currentPets = [...currentPets].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
   displayPets(currentPets);
 });
 
 // ---------- Like ----------
-const likePet = (id, image) => {
+const likePet = (id, image, name) => {
   if (likedEl.querySelector(`[data-id="${id}"]`)) return;
   likedEmptyEl.classList.add('hidden');
   likedEl.insertAdjacentHTML(
     'beforeend',
-    `<img data-id="${id}" src="${image}" alt="Liked pet" class="w-full aspect-square object-cover rounded-lg" />`
+    `<button data-id="${id}" title="View ${name}" aria-label="View details of ${name}"
+      class="liked-pet block rounded-lg overflow-hidden hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary outline-none transition disabled:opacity-50">
+      <img src="${image}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'" alt="${name}" class="w-full aspect-square object-cover" />
+    </button>`
   );
 };
 
+// Clicking a liked pet opens its details
+likedEl.addEventListener('click', (e) => {
+  const thumb = e.target.closest('.liked-pet');
+  if (thumb) showDetails(thumb.dataset.id, thumb);
+});
+
 // ---------- Adopt ----------
-const adoptPet = (btn) => {
+// Show the Adopt/Adopted state on every Adopt button for this pet (cards + details modal)
+const syncAdoptButtons = (id) => {
+  const adopted = adoptedIds.has(String(id));
+  document.querySelectorAll(`button[data-action="adopt"][data-id="${id}"]`).forEach((btn) => {
+    btn.textContent = adopted ? 'Adopted' : 'Adopt';
+    btn.disabled = adopted;
+  });
+};
+
+const adoptPet = (id) => {
+  id = String(id);
+  if (adoptedIds.has(id) || adoptingId) return;
+  adoptingId = id;
   let count = 3;
   countdownEl.textContent = count;
   adoptModal.showModal();
@@ -194,8 +232,9 @@ const adoptPet = (btn) => {
     }
     clearInterval(timer);
     adoptModal.close();
-    btn.textContent = 'Adopted';
-    btn.disabled = true;
+    adoptedIds.add(id);
+    adoptingId = null;
+    syncAdoptButtons(id);
   }, 1000);
 };
 
@@ -203,13 +242,18 @@ const adoptPet = (btn) => {
 adoptModal.addEventListener('cancel', (e) => e.preventDefault());
 
 // ---------- Details ----------
-const showDetails = async (id) => {
+// `trigger` is the Details button or a liked-pet thumbnail
+const showDetails = async (id, trigger) => {
+  const isTextButton = trigger.dataset.action === 'details';
+  trigger.disabled = true;
+  if (isTextButton) trigger.textContent = 'Loading...';
   try {
     const res = await fetch(`${API}/pet/${id}`);
     const { petData } = await res.json();
     const { image, pet_name, breed, date_of_birth, gender, price, vaccinated_status, pet_details } = petData;
     detailsContent.innerHTML = `
-      <img src="${image}" alt="${fallback(pet_name, 'Pet')}" class="w-full max-h-80 object-cover rounded-lg" />
+      <img src="${fallback(image, PLACEHOLDER_IMG)}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"
+        alt="${fallback(pet_name, 'Pet')}" class="w-full max-h-80 object-cover rounded-lg" />
       <h3 class="mt-6 text-2xl font-black">${fallback(pet_name, 'Unnamed')}</h3>
       <ul class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-dark/70">
         ${infoRow(ICONS.breed, 'Breed', fallback(breed))}
@@ -222,11 +266,18 @@ const showDetails = async (id) => {
         <h4 class="font-bold">Details Information</h4>
         <p class="mt-2 text-sm text-dark/70">${fallback(pet_details, 'No details available.')}</p>
       </div>`;
+    detailsAdoptBtn.dataset.id = id;
+    syncAdoptButtons(id);
     detailsModal.showModal();
   } catch (err) {
     alert('Could not load pet details. Please try again.');
+  } finally {
+    trigger.disabled = false;
+    if (isTextButton) trigger.textContent = 'Details';
   }
 };
+
+detailsAdoptBtn.addEventListener('click', () => adoptPet(detailsAdoptBtn.dataset.id));
 
 document.getElementById('details-close').addEventListener('click', () => detailsModal.close());
 
