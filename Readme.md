@@ -1,119 +1,222 @@
-# Peddy - Pet Adoption Platform
+<div align="center">
 
+<img src="images/logo.webp" alt="Peddy logo" width="48" />
 
-In this assignment You have to create a pet adoption platform where users can browse and adopt pets. We will provides you APIs to fetch pet-related data such as all pets, categories of pets, and specific pet details , pet data based on category
+# Peddy — Pet Adoption Platform
 
+**Browse, like, and adopt your next best friend.**
 
-## APIs
+A responsive pet adoption website built with HTML, Tailwind CSS, and vanilla JavaScript, powered by the Programming Hero Peddy API.
 
-The following APIs are available in Peddy:
+[**🔗 Live Site**](https://your-live-link-here) · [**📂 Repository**](https://github.com/mahmudscode/Peddy_web)
 
-1. **Fetch All Pets**
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript_ES6+-F7DF1E?logo=javascript&logoColor=black)
 
-   - **Endpoint:** [https://openapi.programming-hero.com/api/peddy/pets](https://openapi.programming-hero.com/api/peddy/pets)
-   - **Description:** Retrieves a list of all available pets for adoption. The data includes details like pet name, type, age, and adoption status.
+<img src="screenshots/desktop-home.png" alt="Peddy home page" width="100%" />
 
-2. **Fetch Pet Details by ID**
+</div>
 
-   - **Endpoint:**`https://openapi.programming-hero.com/api/peddy/pet/pet-id`
+---
 
-   - **Example:** [https://openapi.programming-hero.com/api/peddy/pet/1](https://openapi.programming-hero.com/api/peddy/pet/1)
-   - **Description:** Fetches detailed information for a specific pet based on its ID. This can be used to view additional information about the pet such as vacination history, description
+## 📖 About
 
-3. **Fetch All Pet Categories**
+Peddy is a single-page pet adoption platform. Visitors can browse every available pet or filter by category, sort by price, like pets to build a personal shortlist, view full details for any pet, and go through a short adoption flow. All pet data is fetched live from a public REST API, and the layout adapts to desktop, tablet, and mobile screens.
 
-   - **Endpoint:** [https://openapi.programming-hero.com/api/peddy/categories](https://openapi.programming-hero.com/api/peddy/categories)
+---
 
-   - **Description:** Fetches a list of all pet categories available in the platform, such as dogs, cats, rabbit , bird, etc.
+## ✨ Key Features
 
-4. **Fetch Pets by Category**
+1. **Dynamic categories & filtering** — Cats, Dogs, Rabbits, and Birds are loaded from the API. Clicking one fetches only that category's pets and highlights the active button. Empty categories show a friendly "No Information Available" message.
+2. **Sort by price** — Sorts the pets currently on screen (including inside the active category) from highest to lowest price. Pets without a price go last.
+3. **Liked pets panel** — Liking a pet adds its photo to a 2‑column grid on the right. After the first like the panel stays in view while you scroll (desktop), and clicking any liked photo opens that pet's details.
+4. **Details modal with adoption** — Shows every field the API returns (breed, birth date, gender, price, vaccination status, description) plus an **Adopt** button.
+5. **Adoption countdown** — Adopting shows a 3 → 2 → 1 countdown, then the button switches to **Adopted** and is disabled everywhere that pet appears, even after sorting or switching categories.
 
-   - **Endpoint:** `https://openapi.programming-hero.com/api/peddy/category/categoryName`
-   - **Example:** [https://openapi.programming-hero.com/api/peddy/category/dog](https://openapi.programming-hero.com/api/peddy/category/dog)
+### Also included
 
-   - **Description:** Fetches data of pets under a specific category, in this case, dogs. This can be used to filter pets based on their category.
+- ⏳ Loading spinner shown for at least 2 seconds on every pet fetch
+- 🧩 Graceful handling of `null` / missing API values (`Not available` placeholders and a fallback image)
+- 📌 Fixed navbar with smooth-scroll links (Home → banner, Shop → pets, Contact → footer) and a collapsible mobile menu
+- 🛡️ Race-condition guard so fast category clicks never show stale results
 
-## Key Requirements
+---
 
-### 1. **Navbar**
+## 📸 Screenshots
 
-- Implement the navbar as per the Figma design.
-- Ensure it is responsive across Desktop, Tablet, and Mobile devices.
-- The navbar should collapse into a mobile menu on smaller screens.
+### Adopt Your Best Friend — liked pets on the right
 
-### 2. **Banner Section**
+<img src="screenshots/desktop-pets.png" alt="Pet cards with liked pets panel" width="100%" />
 
-- Design the banner section as per Figma design.
-- Include a "View More" button that, when clicked, scrolls down to the “Adopt Your Best Friend” section.
-- Ensure the banner is fully responsive.
+### Active category, sorted by price
 
-### 3. **Adopt Your Best Friend Section**
+<img src="screenshots/desktop-category-sorted.png" alt="Dogs category sorted by price" width="100%" />
 
-- **Left Side**:
-  - Display 4 dynamic categories below the section title and subtitle, fetched from the provided API.
-  - Add a "Sort By Price" button on the right, with a subtitle on the left, as per the design.
-  - By default, show all available pets, with the active category styled according to Figma.
-  - After clicking on a category, fetch and display pets from that category in a grid layout.
-  - If no pets are available for a category, show a meaningful message.
-  - Each card must display the following:
-    - Thumbnail/Image
-    - Pet Name
-    - Breed
-    - Birth Date
-    - Gender
-    - Price
-    - Buttons: "Like", "Adopt", and "Details"
-  - If any field is missing from the API response, handle it by displaying a placeholder or meaningful message.
-- **Right Side**:
-  - Clicking the "Like" button should add the pet's thumbnail to the right-side grid.
-  - Display a 2-column layout for liked pet thumbnails.
+### Pet details modal
 
-### 4. **Modal Window**
+<img src="screenshots/details-modal.png" alt="Pet details modal with Adopt and Cancel buttons" width="100%" />
 
-- When the "Details" button is clicked, open a modal that displays all pet information like figma
-- The modal should close when the user clicks close button.
+### Adoption countdown
 
-### 5. **Footer**
+<img src="screenshots/adopt-countdown.png" alt="Adoption countdown modal" width="100%" />
 
-- Implement the footer as per the Figma design.
-- Ensure it is responsive.
+### Empty category
 
-### 6. **Responsive Design**
+<img src="screenshots/empty-category.png" alt="No pets available message for Birds" width="100%" />
 
-- The entire platform must be responsive and functional on Desktop, Tablet, and Mobile devices.
-- Use Tailwind CSS breakpoints for responsiveness.
+### Footer
 
-## Challenges
+<img src="screenshots/footer.png" alt="Footer" width="100%" />
 
-### 1. **Loading Spinner**
+### Mobile
 
-- Display a loading spinner for at least 2 seconds when fetching data from the API.
+| Home | Menu | Pets |
+|:---:|:---:|:---:|
+| <img src="screenshots/mobile-home.png" alt="Mobile home" width="240" /> | <img src="screenshots/mobile-menu.png" alt="Mobile menu open" width="240" /> | <img src="screenshots/mobile-pets.png" alt="Mobile pet cards" width="240" /> |
 
-### 2. **Sort by Price**
+<details>
+<summary><b>Full page (desktop)</b></summary>
 
-- Implement sorting functionality for pets. When the "Sort by Price" button is clicked, sort pets in descending order based on price . sorting on active category is recommended but if you can sort all the data you will get full mark for this requirement.
+<img src="screenshots/desktop-full.png" alt="Full desktop page" width="100%" />
 
-### 3. **Adopt Button Behavior**
+</details>
 
-- Implement an adoption process. When the "Adopt" button is clicked, show a countdown (3, 2, 1) and then change the button text to "Adopted."
+---
 
-### 4. **Handle Null or Undefined Values**
+## 🔌 API Reference
 
-- If any values from the API (e.g., pet breed, birth date) are null or undefined, display a placeholder or relevant message instead of leaving it blank.
+Base URL: `https://openapi.programming-hero.com/api/peddy`
 
-## 5. A beautiful README.md File
+| # | Purpose | Method & Endpoint | Response key |
+|---|---|---|---|
+| 1 | All pets | `GET /pets` | `pets` |
+| 2 | Pet details by ID | `GET /pet/{petId}` | `petData` |
+| 3 | All categories | `GET /categories` | `categories` |
+| 4 | Pets by category | `GET /category/{categoryName}` | `data` |
 
-Ensure the final project includes a `README.md` file with the following details:
+### 1. Fetch all pets
 
-- Project name.
-- Short description of the project.
-- 5 key features of the project.
-- ES6 features used.
-- Live link to the deployed project.
+```http
+GET https://openapi.programming-hero.com/api/peddy/pets
+```
 
-## What to Submit
+Returns every pet available for adoption. Used on first page load.
 
-- Your Private Github Repo Link
-- Your Live Link
+### 2. Fetch pet details by ID
 
-# Best of Luck
+```http
+GET https://openapi.programming-hero.com/api/peddy/pet/1
+```
+
+Returns one pet with its full description. Used by the **Details** button and liked-pet thumbnails.
+
+```json
+{
+  "status": true,
+  "message": "successfully fetched pet data using id 1",
+  "petData": {
+    "petId": 1,
+    "breed": "Golden Retriever",
+    "category": "Dog",
+    "date_of_birth": "2023-01-15",
+    "price": 1200,
+    "image": "https://i.ibb.co.com/p0w744T/pet-1.jpg",
+    "gender": "Male",
+    "pet_details": "This friendly male Golden Retriever is energetic and loyal...",
+    "vaccinated_status": "Fully",
+    "pet_name": "Sunny"
+  }
+}
+```
+
+### 3. Fetch all categories
+
+```http
+GET https://openapi.programming-hero.com/api/peddy/categories
+```
+
+```json
+{
+  "status": true,
+  "categories": [
+    { "id": 1, "category": "Cat", "category_icon": "https://i.ibb.co.com/N7dM2K1/cat.png" },
+    { "id": 2, "category": "Dog", "category_icon": "https://i.ibb.co.com/c8Yp1y7/dog.png" },
+    { "id": 3, "category": "Rabbit", "category_icon": "https://i.ibb.co.com/3hftmLC/rabbit.png" },
+    { "id": 4, "category": "Bird", "category_icon": "https://i.ibb.co.com/6HHZwfq/bird.png" }
+  ]
+}
+```
+
+### 4. Fetch pets by category
+
+```http
+GET https://openapi.programming-hero.com/api/peddy/category/dog
+```
+
+The category name is sent in **lowercase** (`cat`, `dog`, `rabbit`, `bird`). A category with no pets returns `"data": []`, which the site shows as an empty-state message.
+
+> **Heads-up:** some pets have missing fields in the API (e.g. Coco has no `breed`, Bella and Leo have no `date_of_birth`, Luna has no `gender`, Buddy has no `price`, Max has no `vaccinated_status`). Peddy displays `Not available` for these instead of leaving them blank.
+
+---
+
+## 🧠 ES6+ Features Used
+
+| Feature | Where it's used |
+|---|---|
+| `const` / `let` | All variables — no `var` |
+| Arrow functions | Every handler and helper, e.g. `const delay = (ms) => new Promise(...)` |
+| Template literals | Building pet cards, modals, and API URLs (`` `${API}/pet/${id}` ``) |
+| Object destructuring | `const { categories } = await res.json()`, card fields in `.map(({ pet_name, breed, ... }) => ...)` |
+| Array destructuring | `const [res] = await Promise.all([fetch(url), delay(2000)])` |
+| Default parameters | `const fallback = (value, text = 'Not available') => ...` |
+| Spread operator | `[...currentPets].sort(...)` to sort without mutating the original |
+| `async` / `await` | All API calls |
+| Promises & `Promise.all` | Keeps the spinner visible for at least 2 seconds |
+| `Set` | Tracks adopted pet IDs across re-renders |
+| Nullish coalescing `??` | `data[key] ?? []`, `b.price ?? 0` while sorting |
+| Array methods | `map`, `join`, `sort`, `forEach` |
+
+---
+
+## 🗂️ Project Structure
+
+```
+Peddy_web/
+├── index.html        # Page markup (navbar, banner, pets section, footer, modals)
+├── js/
+│   └── main.js       # API calls, rendering, like / adopt / sort / details logic
+├── images/           # Logo, banner image, empty-state illustration
+├── screenshots/      # README screenshots
+└── Readme.md
+```
+
+---
+
+## 🚀 Run Locally
+
+No build step is needed — Tailwind CSS is loaded from its CDN.
+
+```bash
+git clone https://github.com/mahmudscode/Peddy_web.git
+cd Peddy_web
+# open index.html directly, or serve it:
+python3 -m http.server 8000
+# then visit http://localhost:8000
+```
+
+---
+
+## 🛠️ Built With
+
+- **HTML5**
+- **Tailwind CSS** (Play CDN) — custom `primary` (`#0E7A81`) and `dark` (`#131313`) colors
+- **Vanilla JavaScript (ES6+)**
+- **Google Fonts** — Lato
+- **Programming Hero Peddy API**
+
+<div align="center">
+
+Made with 🐾 for pets looking for a home.
+
+</div>
